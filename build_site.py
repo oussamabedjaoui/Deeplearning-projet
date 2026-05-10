@@ -43,6 +43,7 @@ def render_markdown(source_path: Path, output_name: str, title: str) -> None:
 
 def render_notebook(source_path: Path, output_name: str) -> None:
     exporter = HTMLExporter()
+    exporter.exclude_input = True
     exporter.exclude_input_prompt = True
     exporter.exclude_output_prompt = True
     body, _ = exporter.from_filename(str(source_path))
