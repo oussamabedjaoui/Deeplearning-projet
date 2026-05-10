@@ -34,13 +34,13 @@ jobs:
 
       - name: Build site content
         run: |
-          mkdir -p site
           python - <<'PY'
           from pathlib import Path
           import markdown as md
 
           root = Path('.')
           site = root / 'site'
+          site.mkdir(parents=True, exist_ok=True)
 
           def render_markdown(source_path: Path, output_name: str, title: str) -> None:
               content = source_path.read_text(encoding='utf-8')
@@ -76,8 +76,7 @@ jobs:
           (site / 'README.md').write_text((root / 'README.md').read_text(encoding='utf-8'), encoding='utf-8')
           (site / 'RAPPORT_PROJET.md').write_text((root / 'RAPPORT_PROJET.md').read_text(encoding='utf-8'), encoding='utf-8')
           jupyter nbconvert --to html --output secom_predictive_maintenance.html --output-dir site secom_predictive_maintenance.ipynb
-          cat > site/index.html <<'EOF'
-          <!doctype html>
+          index_html = '''<!doctype html>
           <html lang="fr">
           <head>
             <meta charset="utf-8">
@@ -158,8 +157,8 @@ jobs:
               </section>
             </main>
           </body>
-          </html>
-          EOF
+          </html>'''
+          (site / 'index.html').write_text(index_html, encoding='utf-8')
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
